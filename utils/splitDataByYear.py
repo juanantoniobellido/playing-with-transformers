@@ -24,10 +24,10 @@ def splitDataByYear(
         preprocessing (str) - 'Standardization' or 'Normalization' or 'None'
 
     outputs:
-        xTrain (np.array) - numpy array with training input data
-        yTrain (np.array) - numpy array with training target data
-        xTest (np.array) - numpy array with testing input data
-        yTest (np.array) - numpy array with testing target data
+        xTrain (np.array) - shape(batch, lagDays, n_featuresIn)
+        yTrain (np.array) - shape(batch, lagDays, n_featuresOut)
+        xTest (np.array) - shape(batch, lagDays, n_featuresIn)
+        yTest (np.array) - shape(batch, lagDays, n_featuresOut)
     """
     # errors
     assert 'station' in df.columns, "'station'does not exist in the dataframe"
@@ -62,5 +62,10 @@ def splitDataByYear(
         scaler.fit(xTrain)
         xTrain = scaler.transform(xTrain)
         xTest = scaler.transform(xTest)
+
+    xTrain = xTrain.transpose().reshape(len(dfStationTrain), 1, len(varListInputs))
+    xTest = xTest.transpose().reshape(len(dfStationTest), 1, len(varListInputs))
+    yTrain = yTrain.transpose().reshape(len(dfStationTrain), 1, len(varListOutputs))
+    yTest = yTest.transpose().reshape(len(dfStationTest), 1, len(varListOutputs))
     
     return xTrain, xTest, yTrain, yTest

@@ -1,5 +1,8 @@
 #%%
 import pandas as pd
+import pretty_errors
+import matplotlib.pyplot as plt
+
 from utils.splitDataByYear import splitDataByYear
 from models.transformerConvolutionkeras import transformer
 
@@ -30,8 +33,11 @@ model.build_model(
 
 model.train()
 yPred = model.predict()
+print('yPred.shape =', yPred.shape)
+print('yTest.shape =', yTest.shape)
 
-
-
+plt.figure()
+plt.scatter(x=yTest[:,0, 0], y=yPred[:,0])
+plt.show()
 
 # %%

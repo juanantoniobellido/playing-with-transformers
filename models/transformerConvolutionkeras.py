@@ -1,7 +1,6 @@
-import keras
-from keras.models import Sequential
-from keras import optimizers, losses, layers
-from keras import backend as K
+from tensorflow import keras
+from tensorflow.keras import optimizers, losses, layers
+from tensorflow.keras import backend as K
 import tensorflow as tf
 import skopt
 from skopt import gp_minimize
@@ -62,8 +61,13 @@ class transformer:
         """
         Building the full model based on previous variables
         """
+        # choose input shape depending on the shape
+        if len(self.x_train.shape)>2: # xtrain.shape == (batch, lagDays ,n_features)
+            inputs = keras.Input(shape=(self.lagDays, self.n_inputs))
         
-        inputs = keras.Input(shape=(self.lagDays, self.n_inputs))
+        else:# xtrain.shape == (batch, n_features) or (batch,)
+            inputs = keras.Input(shape=(self.n_inputs,))
+
         # loop of transformers
         x = transformer_encoder(inputs, head_size, num_heads, ff_dim, n_kernel, n_strides)
         for _ in range(num_transformer_blocks-1):
